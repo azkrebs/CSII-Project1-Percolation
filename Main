@@ -3,15 +3,20 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) {
         Percolation percolation = new Percolation(10);
-        for (int i = 0; i < percolation.dimension; i++) {
-            percolation.union(percolation.area, percolation.parent[i]);
-            percolation.union(percolation.area + 1, percolation.parent[percolation.area - i]);
+
+        for (int i = 1; i <= percolation.dimension; i++) {
+            percolation.union(percolation.area, i - 1);
+            percolation.union(percolation.area + 1, percolation.area - i);
         }
+
         int counter = 0;
+        int number;
+
         while (!percolation.connected(percolation.area, percolation.area + 1)) {
             Random random = new Random();
-            int number = random.nextInt((percolation.area) + 1);
-            if (percolation.board[number]) {
+            number = random.nextInt(percolation.area);
+
+            if (!percolation.board[number]) {
                 percolation.open(number);
                 counter += 1;
             }
