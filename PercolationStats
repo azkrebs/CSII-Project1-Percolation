@@ -1,0 +1,22 @@
+import javax.imageio.plugins.jpeg.JPEGImageReadParam;
+
+public class PercolationStats {
+    public int dimension = 0;
+    public int trials = 0;
+    Percolation percolation;
+
+    public PercolationStats(int dimension, int trials) {
+        this.dimension = dimension;
+        this.trials = trials;
+        percolation = new Percolation(dimension);
+    }
+
+    public double mean() {
+        float sum = 0;
+        for (int i = 0; i < trials; i++) {
+            System.out.println("NEXT TRIAL");
+            sum += percolation.percolate();
+        }
+        return sum / trials;
+    }
+}
