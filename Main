@@ -2,26 +2,7 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        Percolation percolation = new Percolation(10);
-
-        for (int i = 1; i <= percolation.dimension; i++) {
-            percolation.union(percolation.area, i - 1);
-            percolation.union(percolation.area + 1, percolation.area - i);
-        }
-
-        int counter = 0;
-        int number;
-
-        while (!percolation.connected(percolation.area, percolation.area + 1)) {
-            Random random = new Random();
-            number = random.nextInt(percolation.area);
-
-            if (!percolation.board[number]) {
-                percolation.open(number);
-                counter += 1;
-            }
-        }
-
-        System.out.println(counter);
+        PercolationStats percolationStats = new PercolationStats(4, 500);
+        System.out.println("Final p-value: " + percolationStats.mean());
     }
 }
