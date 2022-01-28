@@ -1,0 +1,45 @@
+public class WeightedQuickUnion {
+    public int dimension;
+    public int area;
+    public int parent[];
+    public int size[];
+
+    public WeightedQuickUnion(int dimension) {
+        this.dimension = dimension;
+        area = dimension * dimension;
+
+        parent = new int[area + 2];
+        size = new int[area + 2];
+
+        for (int i = 0; i < area + 2; i++) {
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    public void union(int p, int q) {
+        int rootp = root(p);
+        int rootq = root(q);
+        if (rootp == rootq) return;
+        if (size[rootp] < size[rootq]) {
+            parent[rootp] = rootq;
+            size[rootp] += rootq;
+        } else {
+            parent[rootq] = rootp;
+            size[rootq] += rootp;
+        }
+    }
+
+    public boolean connected(int p, int q) {
+        return (root(p) == root(q));
+    }
+
+    public int root(int i) {
+        while (i != parent[i]) {
+            parent[i] = parent[parent[i]];
+            i = parent[i];
+        }
+        return i;
+    }
+}
+
