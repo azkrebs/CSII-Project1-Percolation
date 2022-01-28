@@ -4,21 +4,37 @@ public class Percolation {
     public int dimension;
     public int area;
     public boolean board[];
-    public int parent[];
-    private int size[];
+    WeightedQuickUnion weightedQuickUnion;
 
-    public Percolation(int n) {
-        dimension = n;
+    public Percolation(int dimension) {
+        this.dimension = dimension;
         area = dimension * dimension;
+    }
 
+    public float percolate() {
         board = new boolean[area + 2];
-        parent = new int[area + 2];
-        size = new int[area + 2];
+        weightedQuickUnion = new WeightedQuickUnion(10);
 
-        for (int i = 0; i < area + 2; i++) {
-            parent[i] = i;
-            size[i] = 1;
+        for (int i = 1; i <= dimension; i++) {
+            weightedQuickUnion.union(area, i - 1);
+            weightedQuickUnion.union(area + 1, area - i);
         }
+
+        int counter = 0;
+        int number;
+
+        while (!weightedQuickUnion.connected(area, area + 1)) {
+            Random random = new Random();
+            number = random.nextInt(area);
+
+            if (!board[number]) {
+                open(number);
+                System.out.println(this);
+                counter += 1;
+            }
+        }
+
+        return (float)counter / area;
     }
 
     public void open(int cell) {
@@ -28,33 +44,20 @@ public class Percolation {
         for (int i = 0; i < 4; i++) {
             int neighbor = adjacent[i];
             if (neighbor > 0 && neighbor < area && board[neighbor]) {
-                union(cell, neighbor);
+                weightedQuickUnion.union(cell, neighbor);
             }
         }
     }
 
-    public void union(int p, int q) {
-        int rootp = root(p);
-        int rootq = root(q);
-        if (rootp == rootq) return;
-        if (size[rootp] < size[rootq]) {
-            parent[rootp] = rootq;
-            size[rootp] += rootq;
-        } else {
-            parent[rootq] = rootp;
-            size[rootq] += rootp;
+    public String toString() {
+        String[] array = new String[this.dimension];
+        for (int i = 0; i < this.dimension; i++) {
+            int[] temparray = new int[this.dimension];
+            for (int j = 0; j < this.dimension; j++) {
+                temparray[j] = this.board[j + (i * this.dimension)] ? 1 : 0;
+            }
+            array[i] = Arrays.toString(temparray) + "\n";
         }
-    }
-
-    public boolean connected(int p, int q) {
-        return (root(p) == root(q));
-    }
-
-    public int root(int i) {
-        while (i != parent[i]) {
-            parent[i] = parent[parent[i]];
-            i = parent[i];
-        }
-        return i;
+        return " " + Arrays.toString(array);
     }
 }
