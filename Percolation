@@ -1,63 +1,67 @@
 import java.util.*;
 
 public class Percolation {
-    public int dimension;
+    public int width;
     public int area;
     public boolean board[];
     WeightedQuickUnion weightedQuickUnion;
 
-    public Percolation(int dimension) {
-        this.dimension = dimension;
-        area = dimension * dimension;
+    public Percolation(int width) {
+        this.width = width;
+        area = width * width;
     }
 
-    public float percolate() {
-        board = new boolean[area + 2];
-        weightedQuickUnion = new WeightedQuickUnion(10);
+    public double simulate() {
+        board = new boolean[area];
+        weightedQuickUnion = new WeightedQuickUnion(width);
 
-        for (int i = 1; i <= dimension; i++) {
-            weightedQuickUnion.union(area, i - 1);
-            weightedQuickUnion.union(area + 1, area - i);
-        }
+        int opened = 0;
+        int site;
 
-        int counter = 0;
-        int number;
-
-        while (!weightedQuickUnion.connected(area, area + 1)) {
+        while (!weightedQuickUnion.connected(0, area - 1)) {
             Random random = new Random();
-            number = random.nextInt(area);
+            site = random.nextInt(area);
 
-            if (!board[number]) {
-                open(number);
-                System.out.println(this);
-                counter += 1;
+            if (!board[site]) {
+                open(site);
+                opened += 1;
             }
         }
 
-        return (float)counter / area;
+        return (double) opened / area;
     }
 
-    public void open(int cell) {
-        board[cell] = true;
-        int[] adjacent = new int[] {cell + 1, cell - 1, cell - dimension, cell + dimension};
+    public void open(int site) {
+        int[] adjacents = new int[] {site + 1, site - 1, site - width, site + width};
+        int neighbor;
+        int x;
 
-        for (int i = 0; i < 4; i++) {
-            int neighbor = adjacent[i];
-            if (neighbor > 0 && neighbor < area && board[neighbor]) {
-                weightedQuickUnion.union(cell, neighbor);
+        for (int direction = 0; direction < 4; direction++) {
+            neighbor = adjacents[direction];
+            x = site % width;
+            if (!(direction == 0 && x == width - 1)
+                    && !(direction == 1 && x == 0)
+                    && !(direction == 2 && site < width)
+                    && !(direction == 3 && site >= area - width)
+                    && board[neighbor]) {
+                weightedQuickUnion.union(site, neighbor);
             }
         }
+
+        board[site] = true;
     }
 
     public String toString() {
-        String[] array = new String[this.dimension];
-        for (int i = 0; i < this.dimension; i++) {
-            int[] temparray = new int[this.dimension];
-            for (int j = 0; j < this.dimension; j++) {
-                temparray[j] = this.board[j + (i * this.dimension)] ? 1 : 0;
+        String[] output = new String[this.width];
+        int[] temporary;
+
+        for (int row = 0; row < this.width; row++) {
+            temporary = new int[this.width];
+            for (int column = 0; column < this.width; column++) {
+                temporary[column] = this.board[column + (row * this.width)] ? 1 : 0;
             }
-            array[i] = Arrays.toString(temparray) + "\n";
+            output[row] = Arrays.toString(temporary) + "\n";
         }
-        return " " + Arrays.toString(array);
+        return " " + Arrays.toString(output);
     }
 }
