@@ -1,22 +1,35 @@
-import javax.imageio.plugins.jpeg.JPEGImageReadParam;
+public class Statistics {
+    public double[] data;
+    public int trials;
+    public long runtime;
 
-public class PercolationStats {
-    public int dimension = 0;
-    public int trials = 0;
-    Percolation percolation;
+    public Statistics(int trials, int width) {
+        Percolation percolation = new Percolation(width);
+        double[] data = new double[trials];
 
-    public PercolationStats(int dimension, int trials) {
-        this.dimension = dimension;
+        long start = System.nanoTime();
+        for (int i = 0; i < trials; i++) data[i] = percolation.simulate();
+        long end = System.nanoTime();
+
         this.trials = trials;
-        percolation = new Percolation(dimension);
+        this.data = data;
+        this.runtime = end - start;
     }
 
     public double mean() {
-        float sum = 0;
-        for (int i = 0; i < trials; i++) {
-            System.out.println("NEXT TRIAL");
-            sum += percolation.percolate();
-        }
-        return sum / trials;
+        double sum = 0;
+        for (double datapoint: data) sum += datapoint;
+        return sum / (double)  trials;
+    }
+
+    public double standarddev() {
+        double mean = mean();
+        double sqrddeviation = 0;
+        for (double datapoint: data) sqrddeviation += Math.pow(datapoint - mean, 2);
+        return Math.sqrt(sqrddeviation / trials);
+    }
+
+    public long runtime() {
+        return runtime;
     }
 }
