@@ -1,19 +1,19 @@
 public class WeightedQuickUnion {
-    public int dimension;
+    public int width;
     public int area;
     public int parent[];
     public int size[];
 
-    public WeightedQuickUnion(int dimension) {
-        this.dimension = dimension;
-        area = dimension * dimension;
+    public WeightedQuickUnion(int width) {
+        this.width = width;
+        area = width * width;
 
-        parent = new int[area + 2];
-        size = new int[area + 2];
+        parent = new int[area];
+        size = new int[area];
 
-        for (int i = 0; i < area + 2; i++) {
-            parent[i] = i;
-            size[i] = 1;
+        for (int i = 0; i < area; i++) {
+            parent[i] = i < width ? 0 : (i >= area - width ? area - width : i);
+            size[i] = i < width || i >= area - width? 2 : 1;
         }
     }
 
@@ -21,6 +21,7 @@ public class WeightedQuickUnion {
         int rootp = root(p);
         int rootq = root(q);
         if (rootp == rootq) return;
+
         if (size[rootp] < size[rootq]) {
             parent[rootp] = rootq;
             size[rootp] += rootq;
@@ -34,12 +35,11 @@ public class WeightedQuickUnion {
         return (root(p) == root(q));
     }
 
-    public int root(int i) {
-        while (i != parent[i]) {
-            parent[i] = parent[parent[i]];
-            i = parent[i];
+    public int root(int node) {
+        while (node != parent[node]) {
+            parent[node] = parent[parent[node]];
+            node = parent[node];
         }
-        return i;
+        return node;
     }
 }
-
