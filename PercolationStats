@@ -22,11 +22,16 @@ public class Statistics {
         return sum / (double)  trials;
     }
 
-    public double standarddev() {
-        double mean = mean();
+    public double stddev(double mean) {
         double sqrddeviation = 0;
         for (double datapoint: data) sqrddeviation += Math.pow(datapoint - mean, 2);
         return Math.sqrt(sqrddeviation / trials);
+    }
+
+    public double[] interval(double mean, double stddev) {
+        double adjustment = (1.96 * stddev) / Math.sqrt(trials);
+        double[] interval = new double[] {mean - adjustment, mean + adjustment};
+        return interval;
     }
 
     public long runtime() {
