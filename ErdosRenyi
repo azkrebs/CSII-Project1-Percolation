@@ -1,0 +1,43 @@
+import java.util.*;
+
+public class ErdosRenyi {
+    public int width;
+    public int area;
+    WeightedQuickUnion weightedQuickUnion;
+
+    public ErdosRenyi(int width) {
+        this.width = width;
+        area = width * width;
+    }
+
+    public int count() {
+        weightedQuickUnion = new WeightedQuickUnion(width);
+
+        for (int i = 0; i < area; i++) {
+            weightedQuickUnion.parent[i] = i;
+            weightedQuickUnion.size[i] = 1;
+        }
+
+        Random random = new Random();
+
+        int connected = 0;
+
+        while (!complete()) {
+            int[] pair = new int[] {random.nextInt(area), random.nextInt(area)};
+            if (weightedQuickUnion.disconnected(pair[0], pair[1])) {
+                weightedQuickUnion.union(pair[0], pair[1]);
+            }
+            connected ++;
+        }
+        return connected;
+    }
+
+    public boolean complete() {
+        for (int i = 1; i < area; i++) {
+            if (weightedQuickUnion.parent[i] != weightedQuickUnion.parent[0]) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
