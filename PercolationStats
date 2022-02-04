@@ -1,9 +1,9 @@
-public class Statistics {
+public class PercolationStats {
     public double[] data;
     public int trials;
     public long runtime;
 
-    public Statistics(int trials, int width) {
+    public PercolationStats(int trials, int width) {
         Percolation percolation = new Percolation(width);
         double[] data = new double[trials];
 
@@ -30,11 +30,10 @@ public class Statistics {
 
     public double[] interval(double mean, double stddev) {
         double adjustment = (1.96 * stddev) / Math.sqrt(trials);
-        double[] interval = new double[] {mean - adjustment, mean + adjustment};
-        return interval;
+        return new double[] {mean - adjustment, mean + adjustment};
     }
 
-    public long runtime() {
-        return runtime;
+    public double runtime() {
+        return runtime / 1e9;
     }
 }
