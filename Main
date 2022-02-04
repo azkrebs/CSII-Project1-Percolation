@@ -2,8 +2,8 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        int trials = 5;
-        int width = 500;
+        int trials = 10;
+        int width = 10;
 
         try {
             if (args.length == 0) {
@@ -18,7 +18,9 @@ public class Main {
             System.exit(1);
         }
 
-        Statistics statistics = new Statistics(trials, width);
+        System.out.println("\nPercolation Simulation\n");
+
+        PercolationStats statistics = new PercolationStats(trials, width);
 
         double mean = statistics.mean();
         double stddev = statistics.stddev(mean);
@@ -28,6 +30,13 @@ public class Main {
         System.out.println("[+] Mean: " + mean);
         System.out.println("[+] Standard Deviation: " + stddev);
         System.out.println("[+] 95% Confidence Interval: " + Arrays.toString(interval));
-        System.out.println("[+] Total Simulation Runtime: " + runtime + " ms");
+        System.out.println("[+] Total Simulation Runtime: " + runtime + " s");
+
+        ErdosRenyi erdosRenyi = new ErdosRenyi(width);
+
+        int count = erdosRenyi.count();
+
+        System.out.println("\nErdos-Renyi\n");
+        System.out.println("[+] Connection Attempts: " + count);
     }
 }
